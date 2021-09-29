@@ -1,0 +1,46 @@
+drop table notice;
+drop sequence notice_no_seq;
+--공지사항 테이블 생성
+create table notice(
+  no        number(9),             --번호
+  author    varchar(12)  not null,  --작성자
+  subject   varchar(120) not null,  --제목(한글40자까지)
+  content   clob,                   --본문
+  cdate     timestamp  default systimestamp,   --작성일시
+  udate     timestamp,              --수정일시
+  constraint notice_no_pk primary key(no)
+);
+--공지사항.번호 시퀀스 생성
+create sequence notice_no_seq;
+
+--샘플데이터 생성
+insert into notice(no,author,subject,content) 
+       values(notice_no_seq.nextval,'이름-1','제목-1','내용-1'); 
+insert into notice(no,author,subject,content) 
+       values(notice_no_seq.nextval,'이름-2','제목-2','내용-2'); 
+insert into notice(no,author,subject,content) 
+       values(notice_no_seq.nextval,'이름-3','제목-3','내용-3');      
+commit;       
+--조회       
+select no,author,subject,content
+  from notice
+ where no = 1;
+--수정
+update notice
+   set subject = '제목-1-수정',
+       content = '내용-1-수정',
+       udate = systimestamp
+ where no = 1;
+--삭제 
+delete from notice 
+ where no = 3;
+--전체조회 
+select no,author,subject,content,cdate,udate
+  from notice;
+--검색어를 통한 조회  
+select no,author,subject,content,cdate,udate
+  from notice
+ where author   LIKE '%작성자%' 
+    or content  LIKE '%검색어%';
+select * from notice;       
+select count(no) cnt from notice;
